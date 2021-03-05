@@ -31,6 +31,13 @@ const routes = [{
     title: ''
   },
   component: resolve => require(['./Mine'], resolve)
+},{
+  name: 'Friends',
+  path: '/Friends',
+  meta: {
+    title: ''
+  },
+  component: resolve => require(['./Friends'], resolve)
 }];
 
 const router = new Router({

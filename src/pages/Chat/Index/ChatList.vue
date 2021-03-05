@@ -34,9 +34,10 @@
       </div> -->
     </section>
 
-    <section style="margin-top:0.5em;">
+    <section style="margin-top:0.5em;height:80vh;overflow:hidden;width:100%">
       <Mine v-show="selected == 'setting'"/>
       <Chat ref="chat" v-show="selected == 'chat'"/>
+      <Friends v-show="selected == 'friend'"/>
     </section>
 
     <van-dialog v-model="show" title="" @confirm="confirm()">
@@ -73,7 +74,7 @@
           dark
           shift
         >
-          <v-btn @click="selected = 'chat'">
+          <v-btn @click="selected = 'chat', $refs.chat.initGroup()">
             <v-icon>mdi-message-text</v-icon>
             <span style="font-size:10px">聊天</span>
           </v-btn>
@@ -97,17 +98,18 @@
 import fsCfg from "../../../assets/js/fw";
 import util from "../../../assets/js/util";
 import * as signalR from "@microsoft/signalr";
-// let hubUrl = "https://localhost:44351/chatHub";
-// // .net core 版本中默认不会自动重连，需手动调用 withAutomaticReconnect
-// const connection = new signalR.HubConnectionBuilder()
-//   .withAutomaticReconnect([0, 3000, 5000, 10000, 15000, 30000])
-//   .withUrl(hubUrl)
-//   .build();
-// connection.onreconnecting((error) => {
-//   const status = 'Connection lost due to error "${error}"';
-//   console.log(error);
-// });
-// connection.start().catch();
+
+let hubUrl = fsCfg.chatHub(); //";//
+// .net core 版本中默认不会自动重连，需手动调用 withAutomaticReconnect
+const connection = new signalR.HubConnectionBuilder()
+  .withAutomaticReconnect([0, 3000, 5000, 10000, 15000, 30000])
+  .withUrl(hubUrl)
+  .build();
+connection.onreconnecting((error) => {
+  const status = 'Connection lost due to error "${error}"';
+  console.log(error);
+});
+connection.start().catch(function(err) {});
 export default {
   name: "chatlist",
   serviceUrl: {
@@ -117,7 +119,8 @@ export default {
   },
   components:{
     Mine:() => import('./Mine'),
-    Chat:() => import('./Chat')
+    Chat:() => import('./Chat'),
+    Friends:() => import('./Friends')
   },
   data() {
     return {
@@ -166,9 +169,15 @@ export default {
         this.username
       );
       fsCfg.getData(url, function(res) {
-        self.$refs.chat.initGroup()
+        self.$refs.chat.initGroup();
+        self.addFriend(self.username, self.room_number);
       });
     },
+    
+    addFriend: function(apply, to){
+      connection.invoke("AddFriend", apply, to);
+    },
+
     UpdateList() {
       let self = this;
       var url = framework.strFormat(
@@ -183,6 +192,9 @@ export default {
     },
   },
   mounted: function() {
+    console.log(hubUrl);
+
+    connection.on("AddFriend", function(apply, to) {});
   },
   computed: {
     color() {

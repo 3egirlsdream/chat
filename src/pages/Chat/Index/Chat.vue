@@ -18,9 +18,8 @@
           </div>
           <div style="padding:2px;width:85%">
             <div>&nbsp; {{ room.name }}</div>
-            <div style="text-align:right">
-              &nbsp; ...
-            </div>
+            <div style="margin-left:20%;width:60%;overflow:hidden;font-size:14px;"><font color="gray">{{room.newest}} .....</font></div>
+            
             <v-divider></v-divider>
           </div>
         </v-row>
@@ -101,7 +100,7 @@ import * as signalR from "@microsoft/signalr";
 export default {
   name: "chatlist",
   serviceUrl: {
-    API_INIT_GROUP: "/api/values/GetChatList?username={0}",
+    API_INIT_RECENT_GROUP: "/api/chat/getrecentchatedfriend?username={0}",
     API_UpdateList:
       "/api/values/UpdateList?groupId={0}&groupName={1}&users={2}",
   },
@@ -170,7 +169,7 @@ export default {
       console.log('refresh list');
       let self = this;
       var url = framework.strFormat(
-        this.$options.serviceUrl.API_INIT_GROUP,
+        this.$options.serviceUrl.API_INIT_RECENT_GROUP,
         this.username
       );
       fsCfg.getData(url, function(res) {
@@ -180,6 +179,7 @@ export default {
           for (let index = 0; index < res.data.length; index++) {
             let element = res.data[index];
             let rm = {
+              newest: element.USER_CREATED,
               number: element.GROUP_ID,
               name: element.GROUP_NAME,
               img:

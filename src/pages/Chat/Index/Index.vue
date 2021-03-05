@@ -12,7 +12,7 @@
                 >
                   <v-icon>mdi-arrow-left</v-icon>
                 </v-btn>
-                <div style="font-size:0.3em"> {{room_name}}</div>
+                <div> {{room_name}}</div>
                 <v-spacer></v-spacer>
               </v-toolbar>
           </v-row>
@@ -59,7 +59,7 @@
           ><van-icon
               style="margin-top:0.2em;"
               name="smile-o"
-              size="0.8em"
+              size="2em"
               @click="
                 showSelBox == 1 ? (showSelBox = 0) : (showSelBox = 1)
               "/></van-col>
@@ -67,7 +67,7 @@
           <van-icon
               style="margin-top:0.2em;"
               name="like-o"
-              size="0.8em"
+              size="2em"
               @click="
                 showSelBox == 2 ? (showSelBox = 0) : (showSelBox = 2)
               "/>
@@ -76,7 +76,7 @@
           <van-icon
               style="margin-top:0.2em;"
               name="add-o"
-              size="0.8em"
+              size="2em"
               @click="
                 showSelBox == 3 ? (showSelBox = 0) : (showSelBox = 3)
               "/>
@@ -103,7 +103,7 @@
               <div
                 v-for="item in getEXP(n, 18)"
                 :key="item.file"
-                style="float:left;width:14vw;padding-left:5px;"
+                style="float:left;width:14vw;padding-left:5px;line-height:7vh"
               >
                 <img
                   :src="item.file"
@@ -183,7 +183,7 @@ import { Toast } from "vant";
 import { Notify } from 'vant';
 import { Dialog } from 'vant';
 
-let hubUrl = window.location.hostname == 'localhost1' ? "https://localhost:44351/chatHub" : "http://47.107.186.141:5000/chatHub";//";// 
+let hubUrl = window.location.hostname == 'localhost' ? "https://localhost:44389/chatHub" : "http://47.107.186.141:5000/chatHub";//";// 
 // .net core 版本中默认不会自动重连，需手动调用 withAutomaticReconnect
 const connection = new signalR.HubConnectionBuilder()
   .withAutomaticReconnect([0, 3000, 5000, 10000, 15000, 30000])
@@ -340,7 +340,8 @@ export default {
         { file: "199.gif", code: "/:oY", title: "耍帅" },
       ],
       userinfo: [],
-      imagesrc:''
+      imagesrc:'',
+      notSyncRecord:false
     };
   },
   methods: {
@@ -709,6 +710,10 @@ export default {
     this.scrollToBottom();
     this.focusTxtContent();
     
+    window.setTimeout(()=>{
+      this.notSyncRecord = true;
+    }, 2000);
+
   },
 
   watch:{
@@ -717,7 +722,9 @@ export default {
     // },
     records(){
       window.setTimeout(()=>{
-        this.UpChatRecord(this.records);
+        if(this.notSyncRecord){
+          this.UpChatRecord(this.records);
+        }
       }, 1000);
     }
   }

@@ -32,6 +32,7 @@
         alert(error);
       });
   }*/
+  
 
   exports.strFormat = function () {
     if (arguments.length == 0) return null

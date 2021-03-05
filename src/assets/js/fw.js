@@ -3,12 +3,15 @@ import './framework'
 import Axios from "axios";
 const fsCfg = {
     serverAddr: function () {
-        if (window.location.hostname === 'localhost1')
+        if (window.location.hostname === 'localhost')
             return 'https://localhost:44389'
          else if (window.location.protocol === 'http:') {
             return 'http://47.107.186.141:4396'
          }
         return ''
+    },
+    chatHub: function () {
+        return this.serverAddr() + "/chatHub";
     },
     getDataWithoutCheck: function (url, callback) {
         console.log('GET URL:' + url)
