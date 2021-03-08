@@ -183,7 +183,7 @@ import { Toast } from "vant";
 import { Notify } from 'vant';
 import { Dialog } from 'vant';
 
-let hubUrl = window.location.hostname == 'localhost' ? "https://localhost:44389/chatHub" : "http://47.107.186.141:5000/chatHub";//";// 
+let hubUrl = fsCfg.chatHub();//";// 
 // .net core 版本中默认不会自动重连，需手动调用 withAutomaticReconnect
 const connection = new signalR.HubConnectionBuilder()
   .withAutomaticReconnect([0, 3000, 5000, 10000, 15000, 30000])
